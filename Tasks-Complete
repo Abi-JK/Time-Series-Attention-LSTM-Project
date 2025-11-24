@@ -1,0 +1,40 @@
+Advanced Time Series Forecasting with Attention LSTM: Tasks to Complete
+
+This project requires the implementation and comparative analysis of a custom Attention-LSTM model for multivariate time series forecasting.
+
+I. Data Acquisition and Preparation (Requirement 1)
+
+1. Data Generation: Programmatically generate a complex, multivariate time series dataset (minimum 1500 time steps, 5 features) that explicitly incorporates:
+    - Quadratic or non-linear Trend.
+    - Multiple Seasonality components (e.g., long and short cycles).
+    - Multivariate Dependency (Target is a function of other features).
+    - Noise (Random variability).
+2. Preprocessing: Clean and normalize the data using MinMaxScaler for all input features.
+3. Windowing: Implement the sequence windowing function to transform the 2D data into the 3D format (Samples, Time Steps, Features) required for LSTM, using a look-back window of 10 (SEQ_LEN).
+4. Splitting: Split the prepared data into Training and Test sets (e.g., 80/20 split).
+
+II. Model Implementation (Requirement 2)
+
+5. Custom Layer: Implement the Additive Attention Layer (AdditiveAttentionLayer) using TensorFlow/Keras custom layers (tf.keras.layers.Layer).
+6. Attention LSTM: Construct the core Attention-LSTM model (create_attention_lstm) integrating the custom attention layer into a sequence-to-vector architecture.
+7. Baseline DL: Implement the standard LSTM baseline model (create_lstm) without the attention mechanism.
+8. Baseline Traditional: Define the ARIMA model evaluation function (evaluate_arima) for the traditional benchmark.
+
+III. Training and Evaluation (Requirement 3)
+
+9. Training: Train the Standard LSTM and Attention LSTM models for a set number of epochs (e.g., 30) using the prepared training data.
+10. Prediction: Generate predictions for all three models (ARIMA, Standard LSTM, Attention LSTM) on the unscaled Test set data.
+11. Metric Calculation: Calculate and compare the performance metrics: RMSE, MAE, and MAPE for all three models.
+
+IV. Analysis and Documentation (Requirement 4 & Deliverables)
+
+12. Model Comparison Report (Deliverable 2): Summarize the metrics comparison, clearly stating why the Attention-LSTM architecture provides superior performance (if observed) compared to the baselines.
+13. Temporal Analysis (Deliverable 3): Calculate and report the mean attention weight assigned to each past time step (t-1 to t-10) across the entire test set.
+14. Visualizations (Deliverable 3): Generate the following 5 plots using the Matplotlib/Seaborn module:
+    - Model Performance Comparison (Bar Chart of Metrics).
+    - Temporal Focus of Attention (Mean weights across time steps).
+    - Attention LSTM Predictions vs. Actual values.
+    - Residual Plot.
+    - Attention Heatmap for a specific test sample.
+15. Data Summary (Deliverable 4): Document the data generation methodology, including the mathematical components (trend, seasonality, dependencies).
+16. Final Review: Ensure the entire solution is refactored into modular functions with comprehensive docstrings and type hinting for production readiness.
