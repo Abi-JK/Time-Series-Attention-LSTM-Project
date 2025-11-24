@@ -1,0 +1,9 @@
+# Python environment files
+__pycache__/
+*.pyc
+.env
+venv/
+
+# Generated data/plots
+*.png
+*.csv
