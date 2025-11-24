@@ -1,8 +1,8 @@
-# 📈 Time Series Forecasting with Attention LSTM
+#  Time Series Forecasting with Attention LSTM
 
 This project implements and evaluates an **Attention-based Long Short-Term Memory (LSTM)** network for multivariate time series forecasting. The goal is to capture complex temporal dependencies and interpret the model's focus using a custom **Additive Attention Layer**. Performance is rigorously compared against a traditional **ARIMA** model and a standard **LSTM** baseline.
 
-## 🚀 1. Setup and Execution
+##  1. Setup and Execution
 
 1.  **Clone the repository:**
     ```bash
@@ -18,7 +18,7 @@ This project implements and evaluates an **Attention-based Long Short-Term Memor
     python time_series_model.py
     ```
 
-## 📊 2. Comparative Analysis and Results (Deliverable 2)
+##  2. Comparative Analysis and Results (Deliverable 2)
 
 The core models were evaluated on the test set predictions using Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), and Mean Absolute Percentage Error (MAPE). The full comparison is visualized in the `model_comparison_metrics.png` plot.
 
@@ -34,7 +34,7 @@ The core models were evaluated on the test set predictions using Root Mean Squar
 [Image of Model Performance Comparison]
 
 
-## 🧠 3. Attention Weights Interpretation (Deliverable 3)
+##  3. Attention Weights Interpretation (Deliverable 3)
 
 The attention mechanism provides valuable **model interpretability** by outputting weights that indicate which input time steps are most relevant for a given forecast.
 
@@ -51,7 +51,7 @@ The attention mechanism provides valuable **model interpretability** by outputti
 * **Finding:** In this specific instance, the model put the most weight on **t-1 (the most recent step)**, but also allocated a high weight to **t-7**, suggesting a subtle, non-consecutive seven-period dependency was crucial for this particular forecast.
 
 
-## 🧪 4. Data Generation Process (Deliverable 4)
+## 4. Data Generation Process (Deliverable 4)
 
 The project utilizes a **programmatically generated, complex multivariate time series** to ensure known characteristics for testing model capabilities.
 
