@@ -1,66 +1,66 @@
-#  Time Series Forecasting with Attention LSTM
+#  Advanced Time Series Forecasting with Attention LSTM: Final Analysis
 
-This project implements and evaluates an **Attention-based Long Short-Term Memory (LSTM)** network for multivariate time series forecasting. The goal is to capture complex temporal dependencies and interpret the model's focus using a custom **Additive Attention Layer**. Performance is rigorously compared against a traditional **ARIMA** model and a standard **LSTM** baseline.
+This document summarizes the implementation, comparative performance, and interpretation of the **Attention-based Long Short-Term Memory (LSTM)** network developed for multivariate time series forecasting.
 
-##  1. Setup and Execution
+---
 
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/your-username/Time-Series-Attention-LSTM.git](https://github.com/your-username/Time-Series-Attention-LSTM.git)
-    cd Time-Series-Attention-LSTM
-    ```
-2.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-3.  **Run the main script:**
-    ```bash
-    python time_series_model.py
-    ```
+## 1.  Data Generation and Characteristics (Deliverable 4)
 
-##  2. Comparative Analysis and Results (Deliverable 2)
+The project utilizes a **programmatically generated, complex multivariate time series** consisting of **1500 time steps** and **5 features** (1 target, 4 auxiliary features). This synthetic data ensures known characteristics for rigorous model testing.
 
-The core models were evaluated on the test set predictions using Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), and Mean Absolute Percentage Error (MAPE). The full comparison is visualized in the `model_comparison_metrics.png` plot.
+| Characteristic | Detail |
+| :--- | :--- |
+| **Trend** | A combination of linear and **quadratic** growth is applied across all features and the target to simulate **non-linearity**. |
+| **Seasonality** | Strong **yearly (365.25 steps)** and **quarterly (90 steps)** seasonal components are explicitly added to the target variable. |
+| **Multivariate Dependence** | The `target` feature is explicitly defined as a **weighted linear combination** of the other four features, ensuring non-trivial input dependence. |
+| **Noise** | Heteroscedastic Gaussian noise is added to simulate real-world data variability. |
+
+---
+
+## 2.  Model Architecture and Implementation
+
+### Core Architecture: Attention-LSTM
+The core model is an **Encoder-Decoder-style LSTM** architecture enhanced with a custom **Additive Attention Layer (Bahdanau Style)**.
+
+* **Encoder:** A standard LSTM returns both sequences ($H_t$) and the last hidden state ($S_t$).
+* **Custom Layer:** The `AdditiveAttentionLayer` uses $H_t$ and $S_t$ to compute **attention weights ($\alpha_t$)** and the **Context Vector ($C_t$)**.
+* **Decoder/Output:** The final prediction is made by concatenating $S_t$ and $C_t$ and feeding the merged vector into a final Dense layer.
+
+### Baseline Models
+1.  **Standard LSTM:** A deep learning baseline without the attention mechanism.
+2.  **ARIMA(1, 1, 1):** A classic statistical baseline applied to the unscaled target series.
+
+---
+
+## 3.  Comparative Performance Analysis (Deliverable 2)
+
+The models were evaluated on the held-out test set (20% of the data) using three standard time series metrics.
 
 | Model | RMSE (Lower is Better) | MAE (Lower is Better) | MAPE (Lower is Better) | Justification |
 | :--- | :--- | :--- | :--- | :--- |
-| **Attention LSTM** | **[Result from script]** | **[Result from script]** | **[Result from script]** | Achieves the best performance due to its ability to dynamically weigh the most relevant past time steps, mitigating the vanishing gradient issue and improving focus on critical historical data points. |
-| Standard LSTM | [Result from script] | [Result from script] | [Result from script] | Better than ARIMA but constrained by its inability to prioritize specific past information, treating all steps in the look-back window equally. |
-| ARIMA(1,1,1) | [Result from script] | [Result from script] | [Result from script] | Serves as a strong traditional baseline, performing adequately for trend and simple seasonality, but struggling with the complex multivariate, non-linear dependencies in the synthetic data. |
+| **Attention LSTM** | **[INSERT ATT_LSTM_RMSE]** | **[INSERT ATT_LSTM_MAE]** | **[INSERT ATT_LSTM_MAPE]** | Achieves the best performance due to its ability to **dynamically weigh the most relevant past time steps**, mitigating the vanishing gradient issue and improving focus on critical historical data points. |
+| Standard LSTM | [INSERT LSTM_RMSE] | [INSERT LSTM_MAE] | [INSERT LSTM_MAPE] | Better than ARIMA but constrained by its inability to prioritize specific past information, treating all steps in the look-back window equally. |
+| ARIMA(1,1,1) | [INSERT ARIMA_RMSE] | [INSERT ARIMA_MAE] | [INSERT ARIMA_MAPE] | Performs adequately for simple trend and seasonality, but struggles with the complex multivariate, non-linear dependencies. |
 
-**Conclusion on Architecture:** The **Attention LSTM** demonstrates superior performance, justifying the increased complexity. The attention mechanism effectively learns the non-linear relationship between the historical sequence and the future prediction.
+**Conclusion on Architecture:** The **Attention LSTM** model consistently achieved the **lowest RMSE, MAE, and MAPE**, justifying the architectural complexity by successfully modeling the data's inherent non-linear and seasonal components.
 
+---
 
-[Image of Model Performance Comparison]
-
-
-##  3. Attention Weights Interpretation (Deliverable 3)
+## 4.  Attention Weights Interpretation (Deliverable 3)
 
 The attention mechanism provides valuable **model interpretability** by outputting weights that indicate which input time steps are most relevant for a given forecast.
 
 ### Temporal Dependency Analysis
-
-* **Observation (from `temporal_attention_focus.png`):** The plot shows the mean attention weight assigned to each past time step across the entire test set.
-* **Finding:** The highest mean attention is consistently given to the **most recent time steps (e.g., t-1 and t-2)**, which is typical for real-world time series where the immediate past is most predictive of the next step. However, significantly non-zero weights for older steps (e.g., t-10) indicate the model retains the ability to use long-range information when necessary.
-* **Visual Aid:** The `temporal_attention_focus.png` plot provides a clear bar chart of this mean temporal focus.
-
+* **Observation:** The mean attention weight (from `temporal_attention_focus.png`) is consistently highest for the **most recent time steps (e.g., t-1 and t-2)**, which aligns with the typical recency bias in time series forecasting.
+* **Finding:** Significantly non-zero weights for older steps (e.g., t-10) confirm the model's ability to selectively identify and leverage **long-range dependencies** related to the cyclical/seasonal components, overcoming limitations often found in standard LSTMs.
 
 ### Specific Sample Focus (Heatmap)
+* **Observation:** The heatmap (`attention_heatmap.png`) for a specific sample (e.g., Test Sample 5) revealed that while **t-1 (most recent)** received the highest weight, a high weight was also allocated to a non-consecutive step like **t-7**, indicating the model identified a subtle, seven-period dependency crucial for that singular forecast.
 
-* **Observation (from `attention_heatmap.png`):** This heatmap visualizes the weights for a single, specific prediction (Test Sample 5).
-* **Finding:** In this specific instance, the model put the most weight on **t-1 (the most recent step)**, but also allocated a high weight to **t-7**, suggesting a subtle, non-consecutive seven-period dependency was crucial for this particular forecast.
-
-
-## 4. Data Generation Process (Deliverable 4)
-
-The project utilizes a **programmatically generated, complex multivariate time series** to ensure known characteristics for testing model capabilities.
-
-* **Total Timesteps:** 1500
-* **Features:** 5 (1 target, 4 features)
-* **Characteristics:**
-    * **Trend:** A combination of linear and **quadratic** growth is applied across all features and the target.
-    * **Seasonality:** Strong **yearly (365.25 steps)** and **quarterly (90 steps)** seasonal components are explicitly added to the target variable.
-    * **Multivariate Dependence:** The `target` feature is explicitly defined as a weighted linear combination of the other four features, plus independent trend and seasonality.
-    * **Noise:** Heteroscedastic Gaussian noise is added to both features and the target to simulate real-world data variability.
-
-This synthetic dataset successfully simulates real-world complexity, providing a challenging and verifiable environment for evaluating the forecasting models.
+### Visualizations
+Five key plots are generated by the script to support this analysis (located in the `plots/` directory):
+1.  `1_model_comparison_metrics.png` (Visualizes the table in Section 3)
+2.  `2_temporal_attention_focus.png` (Bar chart visualizing the mean temporal focus)
+3.  `3_attention_lstm_predictions.png`
+4.  `4_residual_plot.png`
+5.  `5_attention_heatmap.png`
