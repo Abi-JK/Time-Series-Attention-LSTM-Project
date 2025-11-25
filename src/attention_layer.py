@@ -1,9 +1,9 @@
-# src/attention_layer.py
+
 
 import tensorflow as tf
 K = tf.keras.backend
 
-# --- Custom Attention Layer Implementation ---
+#Custom Attention Layer Implementation 
 class AdditiveAttentionLayer(tf.keras.layers.Layer):
     """
     Bahdanau-style Additive Attention Mechanism.
@@ -40,7 +40,7 @@ class AdditiveAttentionLayer(tf.keras.layers.Layer):
     def compute_output_shape(self, input_shape):
         return [(input_shape[0][0], input_shape[0][2]), (input_shape[0][0], input_shape[0][1], 1)]
 
-# --- Model Definition Functions ---
+# Model Definition Functions
 
 def create_lstm(input_shape: tuple, units: int = 64) -> tf.keras.Model:
     """Standard LSTM model without attention (Baseline DL Model)."""
