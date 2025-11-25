@@ -1,4 +1,4 @@
-# src/main_runner.py
+
 
 import os
 import numpy as np
@@ -18,7 +18,7 @@ from src.attention_layer import create_lstm, create_attention_lstm
 tf.random.set_seed(42) 
 K = tf.keras.backend # Need Keras backend reference for metrics
 
-# --- 1. Data Generation Module ---
+# 1. Data Generation Module
 def generate_complex_multivariate_data(n_timesteps: int = 1500, n_features: int = 5) -> pd.DataFrame:
     """Generates a synthetic multivariate time series dataset with trend, seasonality, and noise."""
     time = np.arange(n_timesteps)
@@ -41,7 +41,7 @@ def generate_complex_multivariate_data(n_timesteps: int = 1500, n_features: int 
                     target_noise * 0.5)
     return df
 
-# --- 2. Data Preparation Module ---
+# 2. Data Preparation Module 
 def prepare_data(df: pd.DataFrame, seq_len: int, target_col: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, MinMaxScaler, MinMaxScaler, List[str]]:
     """Normalizes and creates windowed sequences for time series forecasting."""
     target_index = df.columns.get_loc(target_col) - 1 
@@ -68,7 +68,7 @@ def prepare_data(df: pd.DataFrame, seq_len: int, target_col: str) -> Tuple[np.nd
     analysis_feature_cols = df.drop(columns=['time']).columns.tolist()
     return X_train, y_train, X_test, y_test, scaler_X, scaler_y, analysis_feature_cols
 
-# --- 3. Evaluation and Metrics Module ---
+# 3. Evaluation and Metrics Module
 def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> Dict[str, float]:
     """Calculates RMSE, MAE, and MAPE."""
     rmse = np.sqrt(mean_squared_error(y_true, y_pred))
@@ -92,10 +92,9 @@ def evaluate_arima(y_train_unscaled: np.ndarray, y_test_unscaled: np.ndarray) ->
         print(f"ARIMA training failed: {e}")
         return {'RMSE': 1.80, 'MAE': 1.25, 'MAPE': 9.5} # Fallback
 
-# --- 4. Plotting Module ---
-# Note: Saving plots to a 'plots/' subdirectory
+# 4. Plotting Module
 PLOT_DIR = 'plots'
-os.makedirs(PLOT_DIR, exist_ok=True) # Create plots directory if it doesn't exist
+os.makedirs(PLOT_DIR, exist_ok=True) 
 
 def plot_model_comparison(report_data: dict, filename: str = '1_model_comparison_metrics.png'):
     """1. Plots a grouped bar chart comparing the performance metrics of the models."""
@@ -120,7 +119,7 @@ def plot_model_comparison(report_data: dict, filename: str = '1_model_comparison
     ax.legend()
     fig.tight_layout()
     plt.savefig(os.path.join(PLOT_DIR, filename))
-    plt.close() # Close figure to free memory
+    plt.close() 
 
 
 def plot_temporal_attention(report_data: dict, filename: str = '2_temporal_attention_focus.png'):
@@ -203,10 +202,10 @@ def plot_attention_heatmap(attention_weights: np.ndarray, sample_index: int, seq
     plt.savefig(os.path.join(PLOT_DIR, filename))
     plt.close()
 
-# --- 5. Main Execution ---
+#5. Main Execution
 def main():
     """Main execution function to run the time series forecasting pipeline."""
-    # --- Configuration ---
+    #Configuration
     N_TIMESTEPS = 1500
     N_FEATURES = 5
     SEQ_LEN = 10
@@ -229,10 +228,10 @@ def main():
     y_train_unscaled = scaler_y.inverse_transform(y_train.reshape(-1, 1)).flatten()
     y_test_unscaled = scaler_y.inverse_transform(y_test.reshape(-1, 1)).flatten()
 
-    # --- ARIMA Baseline ---
+    # ARIMA Baseline
     arima_metrics = evaluate_arima(y_train_unscaled, y_test_unscaled)
 
-    # --- Standard LSTM Baseline ---
+    # Standard LSTM Baseline
     lstm_model = create_lstm(input_shape)
     print("\n--- Training Standard LSTM (Baseline DL) ---")
     lstm_model.fit(X_train, y_train, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=0)
@@ -241,7 +240,7 @@ def main():
     lstm_metrics = calculate_metrics(y_test_unscaled, y_pred_lstm)
     print(f"Standard LSTM Metrics: {lstm_metrics}")
 
-    # --- Attention LSTM Model ---
+    # Attention LSTM Model
     attention_lstm_model = create_attention_lstm(input_shape)
     print("\n--- Training Attention LSTM (Core Model) ---")
     # The Attention LSTM model has two outputs: prediction (y) and weights (dummy)
@@ -254,7 +253,7 @@ def main():
     att_lstm_metrics = calculate_metrics(y_test_unscaled, y_pred_att)
     print(f"Attention LSTM Metrics: {att_lstm_metrics}")
 
-    # --- Attention Weights Analysis ---
+    #  Attention Weights Analysis 
     print("\n--- Attention Weights Analysis: Temporal Focus ---")
     attention_weights_sq = attention_weights.squeeze(axis=-1)
     mean_attention = np.mean(attention_weights_sq, axis=0)
@@ -262,7 +261,7 @@ def main():
     print("Mean Attention per time step (t-10 is the oldest, t-1 is the most recent):")
     print(temporal_focus_report)
 
-    # --- Final Report Data Summary ---
+    # Final Report Data Summary 
     report_data = {
         'Standard_LSTM': lstm_metrics,
         'Attention_LSTM': att_lstm_metrics,
@@ -270,7 +269,7 @@ def main():
         'Temporal_Focus': temporal_focus_report,
     }
 
-    # --- Plotting (5 Visualizations) ---
+    #Plotting (5 Visualizations) 
     print("\n--- Generating 5 Analysis Plots (saved to 'plots/' directory) ---")
     plot_model_comparison(report_data)
     plot_temporal_attention(report_data)
