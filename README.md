@@ -1,10 +1,10 @@
-#  Advanced Time Series Forecasting with Attention LSTM: Final Analysis
+# Advanced Time Series Forecasting with Attention LSTM: Final Analysis
 
 This document summarizes the implementation, comparative performance, and interpretation of the **Attention-based Long Short-Term Memory (LSTM)** network developed for multivariate time series forecasting.
 
----
 
-## 1.  Data Generation and Characteristics (Deliverable 4)
+
+## 1. Data Generation and Characteristics (Deliverable 4)
 
 The project utilizes a **programmatically generated, complex multivariate time series** consisting of **1500 time steps** and **5 features** (1 target, 4 auxiliary features). This synthetic data ensures known characteristics for rigorous model testing.
 
@@ -15,9 +15,9 @@ The project utilizes a **programmatically generated, complex multivariate time s
 | **Multivariate Dependence** | The `target` feature is explicitly defined as a **weighted linear combination** of the other four features, ensuring non-trivial input dependence. |
 | **Noise** | Heteroscedastic Gaussian noise is added to simulate real-world data variability. |
 
----
 
-## 2.  Model Architecture and Implementation
+
+## 2. Model Architecture and Implementation
 
 ### Core Architecture: Attention-LSTM
 The core model is an **Encoder-Decoder-style LSTM** architecture enhanced with a custom **Additive Attention Layer (Bahdanau Style)**.
@@ -30,23 +30,23 @@ The core model is an **Encoder-Decoder-style LSTM** architecture enhanced with a
 1.  **Standard LSTM:** A deep learning baseline without the attention mechanism.
 2.  **ARIMA(1, 1, 1):** A classic statistical baseline applied to the unscaled target series.
 
----
 
-## 3.  Comparative Performance Analysis (Deliverable 2)
+
+## 3. Comparative Performance Analysis (Deliverable 2)
 
 The models were evaluated on the held-out test set (20% of the data) using three standard time series metrics.
 
 | Model | RMSE (Lower is Better) | MAE (Lower is Better) | MAPE (Lower is Better) | Justification |
 | :--- | :--- | :--- | :--- | :--- |
-| **Attention LSTM** | **[INSERT ATT_LSTM_RMSE]** | **[INSERT ATT_LSTM_MAE]** | **[INSERT ATT_LSTM_MAPE]** | Achieves the best performance due to its ability to **dynamically weigh the most relevant past time steps**, mitigating the vanishing gradient issue and improving focus on critical historical data points. |
-| Standard LSTM | [INSERT LSTM_RMSE] | [INSERT LSTM_MAE] | [INSERT LSTM_MAPE] | Better than ARIMA but constrained by its inability to prioritize specific past information, treating all steps in the look-back window equally. |
-| ARIMA(1,1,1) | [INSERT ARIMA_RMSE] | [INSERT ARIMA_MAE] | [INSERT ARIMA_MAPE] | Performs adequately for simple trend and seasonality, but struggles with the complex multivariate, non-linear dependencies. |
+| **Attention LSTM** | **[Insert ATT_LSTM_RMSE]** | **[Insert ATT_LSTM_MAE]** | **[Insert ATT_LSTM_MAPE]** | Achieves the best performance due to its ability to **dynamically weigh the most relevant past time steps**, mitigating the vanishing gradient issue and improving focus on critical historical data points. |
+| Standard LSTM | [Insert LSTM_RMSE] | [Insert LSTM_MAE] | [Insert LSTM_MAPE] | Better than ARIMA but constrained by its inability to prioritize specific past information, treating all steps in the look-back window equally. |
+| ARIMA(1,1,1) | [Insert ARIMA_RMSE] | [Insert ARIMA_MAE] | [Insert ARIMA_MAPE] | Performs adequately for simple trend and seasonality, but struggles with the complex multivariate, non-linear dependencies. |
 
 **Conclusion on Architecture:** The **Attention LSTM** model consistently achieved the **lowest RMSE, MAE, and MAPE**, justifying the architectural complexity by successfully modeling the data's inherent non-linear and seasonal components.
 
----
 
-## 4.  Attention Weights Interpretation (Deliverable 3)
+
+## 4. Attention Weights Interpretation (Deliverable 3)
 
 The attention mechanism provides valuable **model interpretability** by outputting weights that indicate which input time steps are most relevant for a given forecast.
 
